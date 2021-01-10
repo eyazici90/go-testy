@@ -7,21 +7,23 @@ import (
 	"github.com/go-playground/assert"
 )
 
-type Fake struct {
-	number int
+func TestSum_v1(t *testing.T) {
+	Given(t, func(ctx *TestContext) {
+		ctx.Use().A(Fake{
+			number: 1,
+		})
+	}).WhenR(func(ctx *TestContext) interface{} {
+		tF := ctx.The(Fake{})
+		f := tF.(Fake)
+
+		return f.Sum(1)
+	}).Then(func(ctx *TestContext) {
+		assert.Equal(ctx.T(), 2, ctx.Got())
+	})
 }
 
-func Sum(f1, f2 Fake) int {
-	return f1.number + f1.number
-}
-
-func TestCalculate(t *testing.T) {
-	Given(t, fake).WhenR(func(ctx *TestContext) interface{} {
-		f := ctx.The(Fake{})
-		f1, f2 := f.(Fake), f.(Fake)
-
-		return Sum(f1, f2)
-	}).Then(verify)
+func TestSum_v2(t *testing.T) {
+	Given(t, fake).WhenR(sumR).Then(verify)
 }
 
 func fake(ctx *TestContext) {
@@ -30,6 +32,13 @@ func fake(ctx *TestContext) {
 	})
 }
 
-func verify(t *testing.T, ctx *TestContext) {
-	assert.Equal(t, 2, ctx.Got())
+func sumR(ctx *TestContext) interface{} {
+	tF := ctx.The(Fake{})
+	f := tF.(Fake)
+
+	return f.Sum(1)
+}
+
+func verify(ctx *TestContext) {
+	assert.Equal(ctx.T(), 2, ctx.Got())
 }

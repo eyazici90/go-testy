@@ -4,8 +4,9 @@ import "testing"
 
 type (
 	Do  func(*TestContext)
-	DoT func(*testing.T, *TestContext)
 	DoR func(*TestContext) interface{}
+
+	// DoT func(*testing.T, *TestContext)
 )
 
 func Given(t *testing.T, d Do) GivenResult {
@@ -30,6 +31,6 @@ func (g GivenResult) WhenR(d DoR) WhenResult {
 	}
 }
 
-func (w WhenResult) Then(d DoT) {
-	d(w.ctx.t, w.ctx)
+func (w WhenResult) Then(d Do) {
+	d(w.ctx)
 }

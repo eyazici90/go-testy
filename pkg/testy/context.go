@@ -18,22 +18,24 @@ func NewTestContext(t *testing.T) *TestContext {
 	}
 }
 
-func (t *TestContext) UseThe(any interface{}) {
-	tp := reflect.TypeOf(any)
-	t.val[tp] = any
+func (t *TestContext) UseThe(i interface{}) {
+	tp := reflect.TypeOf(i)
+	t.val[tp] = i
 }
 
-func (t *TestContext) The(any interface{}) interface{} {
-	tp := reflect.TypeOf(any)
+func (t *TestContext) The(i interface{}) interface{} {
+	tp := reflect.TypeOf(i)
 	return t.val[tp]
 }
 
 func (t *TestContext) Got() interface{} { return t.got }
 
+func (t *TestContext) T() *testing.T { return t.t }
+
 func (t *TestContext) Use() *TestContext { return t }
 
-func (t *TestContext) A(any interface{}) {
+func (t *TestContext) A(i interface{}) {
 	//fixture generate
-	tp := reflect.TypeOf(any)
-	t.val[tp] = any
+	tp := reflect.TypeOf(i)
+	t.val[tp] = i
 }
