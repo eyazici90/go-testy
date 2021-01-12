@@ -5,8 +5,6 @@ import "testing"
 type (
 	Do  func(*TestContext)
 	DoR func(*TestContext) interface{}
-
-	// DoT func(*testing.T, *TestContext)
 )
 
 func Given(t *testing.T, d Do) GivenResult {
