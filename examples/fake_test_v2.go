@@ -3,7 +3,7 @@ package examples
 import (
 	"testing"
 
-	. "testy/pkg/testy"
+	. "testy/testy"
 
 	"github.com/go-playground/assert"
 )
