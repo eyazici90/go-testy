@@ -1,4 +1,4 @@
-package _examples
+package examples
 
 type Fake struct {
 	number int
