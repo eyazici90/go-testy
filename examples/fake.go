@@ -1,9 +1,9 @@
 package examples
 
 type Fake struct {
-	number int
+	Number int
 }
 
 func (f Fake) Sum(n int) int {
-	return f.number + n
+	return f.Number + n
 }
