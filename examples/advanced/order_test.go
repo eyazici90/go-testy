@@ -19,29 +19,59 @@ func TestOrder_should_be_shipped_when_ship(t *testing.T) {
 			Then(func(r Resolver) {
 				assert.Equal(r.T(), Shipped, order.status)
 			})
+
 	})
 }
 
-type orderFixture struct {
+func TestOrder_should_be_paid_when_pay(t *testing.T) {
+	Given(t, func(ctx Tctx) {
+		order := an().order().was().createdAt(time.Now()).as(Submitted).toOrder()
+
+		WhenR(ctx, func() interface{} {
+			return order.Pay()
+		}).
+			Then(func(r Resolver) {
+				assert.Equal(r.T(), Paid, r.Got())
+			})
+
+	})
+}
+
+func TestOrder_should_not_valid(t *testing.T) {
+	Given(t, func(ctx Tctx) {
+		order := an().order().was().createdAt(time.Now()).as(Submitted).toOrder()
+
+		WhenRErr(ctx, func() (interface{}, error) {
+			return order.Valid()
+		}).
+			Then(func(r Resolver) {
+				assert.False(r.T(), r.Got().(bool))
+				assert.Error(r.T(), r.Err())
+			})
+
+	})
+}
+
+type orderFactory struct {
 	ordr Order
 }
 
-func an() *orderFixture { return &orderFixture{} }
+func an() *orderFactory { return &orderFactory{} }
 
-func (o *orderFixture) order() *orderFixture {
+func (o *orderFactory) order() *orderFactory {
 	o.ordr = Order{}
 	return o
 }
 
-func (o *orderFixture) createdAt(t time.Time) *orderFixture {
+func (o *orderFactory) createdAt(t time.Time) *orderFactory {
 	o.ordr.created = t
 	return o
 }
 
-func (o *orderFixture) as(s Status) *orderFixture {
+func (o *orderFactory) as(s Status) *orderFactory {
 	o.ordr.status = s
 	return o
 }
 
-func (o *orderFixture) was() *orderFixture { return o }
-func (o *orderFixture) toOrder() Order     { return o.ordr }
+func (o *orderFactory) was() *orderFactory { return o }
+func (o *orderFactory) toOrder() Order     { return o.ordr }

@@ -1,6 +1,7 @@
 package advanced
 
 import (
+	"errors"
 	"time"
 )
 
@@ -20,3 +21,12 @@ type Order struct {
 }
 
 func (o *Order) Ship() { o.status = Shipped }
+
+func (o *Order) Pay() Status {
+	o.status = Paid
+	return o.status
+}
+
+func (o *Order) Valid() (bool, error) {
+	return false, errors.New("fake error")
+}

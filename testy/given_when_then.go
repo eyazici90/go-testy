@@ -7,27 +7,26 @@ type (
 	DoR func(Tctx) interface{}
 )
 
-func Given(t *testing.T, d Do) GivenResult {
+func Given(t *testing.T, fn Do) GivenResult {
 	ctx := NewTestContext(t)
-	d(ctx)
+	fn(ctx)
 	return GivenResult{
 		ctx: ctx,
 	}
 }
 
-func (g GivenResult) When(d Do) WhenResult {
-	d(g.ctx)
+func (g GivenResult) When(fn Do) WhenResult {
+	fn(g.ctx)
 	return WhenResult{
-		ctx: g.ctx,
+		ctx: g.ctx.copy(),
 	}
 }
 
-func (g GivenResult) WhenR(d DoR) WhenResult {
-	ctx := g.ctx
-	got := d(ctx)
-	ctx.got = got
+func (g GivenResult) WhenR(fn DoR) WhenResult {
+	got := fn(g.ctx)
+	g.ctx.got = got
 	return WhenResult{
-		ctx: ctx,
+		ctx: g.ctx.copy(),
 	}
 }
 
@@ -39,7 +38,7 @@ func When(context Tctx, fn func()) WhenResult {
 	fn()
 	ctx := context.(*TestContext)
 	return WhenResult{
-		ctx,
+		ctx.copy(),
 	}
 }
 
@@ -49,7 +48,18 @@ func WhenR(context Tctx, fn func() interface{}) WhenResult {
 	ctx.got = got
 
 	return WhenResult{
-		ctx,
+		ctx.copy(),
+	}
+}
+
+func WhenRErr(context Tctx, fn func() (interface{}, error)) WhenResult {
+	got, err := fn()
+	ctx := context.(*TestContext)
+	ctx.got = got
+	ctx.err = err
+
+	return WhenResult{
+		ctx.copy(),
 	}
 }
 

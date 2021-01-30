@@ -1,7 +1,6 @@
 package testy
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -15,6 +14,7 @@ type (
 	}
 	Resolver interface {
 		Got() interface{}
+		Err() error
 		Subject() interface{}
 		T() *testing.T
 	}
@@ -22,42 +22,34 @@ type (
 
 type TestContext struct {
 	t       *testing.T
-	val     map[reflect.Type]interface{}
 	got     interface{}
+	err     error
 	subject interface{}
 }
 
 func NewTestContext(t *testing.T) *TestContext {
 	return &TestContext{
-		t:   t,
-		val: make(map[reflect.Type]interface{}),
+		t: t,
 	}
-}
-
-func (t *TestContext) UseThe(i interface{}) {
-	tp := reflect.TypeOf(i)
-	t.val[tp] = i
 }
 
 func (t *TestContext) SetThe(i interface{}) {
 	t.subject = i
 }
 
-func (t *TestContext) The(i interface{}) interface{} {
-	tp := reflect.TypeOf(i)
-	return t.val[tp]
-}
-
 func (t *TestContext) Got() interface{} { return t.got }
+
+func (t *TestContext) Err() error { return t.err }
 
 func (t *TestContext) T() *testing.T { return t.t }
 
 func (t *TestContext) Subject() interface{} { return t.subject }
 
-func (t *TestContext) Use() *TestContext { return t }
-
-func (t *TestContext) A(i interface{}) {
-	//fixture generate
-	tp := reflect.TypeOf(i)
-	t.val[tp] = i
+func (t *TestContext) copy() *TestContext {
+	return &TestContext{
+		err:     t.err,
+		got:     t.got,
+		subject: t.subject,
+		t:       t.t,
+	}
 }
