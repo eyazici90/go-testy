@@ -5,6 +5,21 @@ import (
 	"testing"
 )
 
+type (
+	Tctx interface {
+		Registrar
+		Resolver
+	}
+	Registrar interface {
+		SetThe(i interface{})
+	}
+	Resolver interface {
+		Got() interface{}
+		Subject() interface{}
+		T() *testing.T
+	}
+)
+
 type TestContext struct {
 	t       *testing.T
 	val     map[reflect.Type]interface{}

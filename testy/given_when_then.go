@@ -3,8 +3,8 @@ package testy
 import "testing"
 
 type (
-	Do  func(*TestContext)
-	DoR func(*TestContext) interface{}
+	Do  func(Tctx)
+	DoR func(Tctx) interface{}
 )
 
 func Given(t *testing.T, d Do) GivenResult {
@@ -17,7 +17,9 @@ func Given(t *testing.T, d Do) GivenResult {
 
 func (g GivenResult) When(d Do) WhenResult {
 	d(g.ctx)
-	return WhenResult{}
+	return WhenResult{
+		ctx: g.ctx,
+	}
 }
 
 func (g GivenResult) WhenR(d DoR) WhenResult {
@@ -29,6 +31,28 @@ func (g GivenResult) WhenR(d DoR) WhenResult {
 	}
 }
 
-func (w WhenResult) Then(d Do) {
-	d(w.ctx)
+func (w WhenResult) Then(fn func(Resolver)) {
+	fn(w.ctx)
+}
+
+func When(context Tctx, fn func()) WhenResult {
+	fn()
+	ctx := context.(*TestContext)
+	return WhenResult{
+		ctx,
+	}
+}
+
+func WhenR(context Tctx, fn func() interface{}) WhenResult {
+	got := fn()
+	ctx := context.(*TestContext)
+	ctx.got = got
+
+	return WhenResult{
+		ctx,
+	}
+}
+
+func Then(ctx *TestContext, fn func()) {
+	fn()
 }
