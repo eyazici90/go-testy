@@ -10,14 +10,14 @@ import (
 )
 
 func TestSum_v3(t *testing.T) {
-	Given(t, func(ctx *TestContext) {
+	Given(t, func(ctx Tctx) {
 		fixture := a().fake().has().number(2)
 
 		WhenR(ctx, func() interface{} {
 			return fixture.fk.Sum(4)
 		}).
-			Then(func(ctx *TestContext) {
-				assert.Equal(ctx.T(), 6, ctx.Got())
+			Then(func(r Resolver) {
+				assert.Equal(r.T(), 6, r.Got())
 			})
 	})
 }

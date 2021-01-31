@@ -10,17 +10,14 @@ import (
 )
 
 func TestSum_v1(t *testing.T) {
-	Given(t, func(ctx *TestContext) {
-		ctx.Use().A(examples.Fake{
-			Number: 1,
-		})
+	Given(t, func(ctx Tctx) {
 		ctx.SetThe(examples.Fake{
 			Number: 1,
 		})
-	}).WhenR(func(ctx *TestContext) interface{} {
+	}).WhenR(func(ctx Tctx) interface{} {
 		return ctx.Subject().(examples.Fake).Sum(1)
 
-	}).Then(func(ctx *TestContext) {
-		assert.Equal(ctx.T(), 2, ctx.Got())
+	}).Then(func(r Resolver) {
+		assert.Equal(r.T(), 2, r.Got())
 	})
 }

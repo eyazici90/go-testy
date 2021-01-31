@@ -13,16 +13,16 @@ func TestSum_v2(t *testing.T) {
 	Given(t, fake).WhenR(sum).Then(verify)
 }
 
-func fake(ctx *TestContext) {
+func fake(ctx Tctx) {
 	ctx.SetThe(examples.Fake{
 		Number: 1,
 	})
 }
 
-func sum(ctx *TestContext) interface{} {
+func sum(ctx Tctx) interface{} {
 	return ctx.Subject().(examples.Fake).Sum(1)
 }
 
-func verify(ctx *TestContext) {
-	assert.Equal(ctx.T(), 2, ctx.Got())
+func verify(r Resolver) {
+	assert.Equal(r.T(), 2, r.Got())
 }

@@ -16,17 +16,20 @@ func Given(t *testing.T, fn Do) GivenResult {
 }
 
 func (g GivenResult) When(fn Do) WhenResult {
-	fn(g.ctx)
+	copy := g.ctx.copy()
+	fn(copy)
 	return WhenResult{
-		ctx: g.ctx.copy(),
+		ctx: copy,
 	}
 }
 
 func (g GivenResult) WhenR(fn DoR) WhenResult {
-	got := fn(g.ctx)
-	g.ctx.got = got
+	copy := g.ctx.copy()
+	got := fn(copy)
+	copy.got = got
+
 	return WhenResult{
-		ctx: g.ctx.copy(),
+		ctx: copy,
 	}
 }
 
@@ -36,19 +39,20 @@ func (w WhenResult) Then(fn func(Resolver)) {
 
 func When(context Tctx, fn func()) WhenResult {
 	fn()
-	ctx := context.(*TestContext)
+	copy := context.(*TestContext).copy()
 	return WhenResult{
-		ctx.copy(),
+		copy,
 	}
 }
 
 func WhenR(context Tctx, fn func() interface{}) WhenResult {
 	got := fn()
 	ctx := context.(*TestContext)
-	ctx.got = got
+	copy := ctx.copy()
+	copy.got = got
 
 	return WhenResult{
-		ctx.copy(),
+		copy,
 	}
 }
 

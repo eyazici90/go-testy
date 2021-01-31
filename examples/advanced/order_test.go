@@ -25,13 +25,23 @@ func TestOrder_should_be_shipped_when_ship(t *testing.T) {
 
 func TestOrder_should_be_paid_when_pay(t *testing.T) {
 	Given(t, func(ctx Tctx) {
-		order := an().order().was().createdAt(time.Now()).as(Submitted).toOrder()
+		ctx.SetThe(
+			an().order().was().createdAt(time.Now()).as(Submitted).toOrder(),
+		)
 
 		WhenR(ctx, func() interface{} {
-			return order.Pay()
+			return ctx.Subject().(*Order).Pay()
 		}).
 			Then(func(r Resolver) {
 				assert.Equal(r.T(), Paid, r.Got())
+			})
+
+		When(ctx, func() {
+			ctx.Subject().(*Order).Ship()
+		}).
+			Then(func(r Resolver) {
+				got := ctx.Subject().(*Order)
+				assert.Equal(r.T(), Shipped, got.status)
 			})
 
 	})
@@ -51,27 +61,3 @@ func TestOrder_should_not_valid(t *testing.T) {
 
 	})
 }
-
-type orderFactory struct {
-	ordr Order
-}
-
-func an() *orderFactory { return &orderFactory{} }
-
-func (o *orderFactory) order() *orderFactory {
-	o.ordr = Order{}
-	return o
-}
-
-func (o *orderFactory) createdAt(t time.Time) *orderFactory {
-	o.ordr.created = t
-	return o
-}
-
-func (o *orderFactory) as(s Status) *orderFactory {
-	o.ordr.status = s
-	return o
-}
-
-func (o *orderFactory) was() *orderFactory { return o }
-func (o *orderFactory) toOrder() Order     { return o.ordr }
