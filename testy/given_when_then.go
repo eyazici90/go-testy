@@ -40,6 +40,7 @@ func (w WhenResult) Then(fn func(Resolver)) {
 func When(context Tctx, fn func()) WhenResult {
 	fn()
 	copy := context.(*TestContext).copy()
+	copy.got = copy.Subject()
 	return WhenResult{
 		copy,
 	}
