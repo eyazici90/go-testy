@@ -1,16 +1,29 @@
 package advanced
 
-import "time"
+import (
+	"time"
+
+	"testy/testy"
+)
+
+type generators struct {
+	registrar      testy.Registrar
+	orderGenerator *orderGenerator
+}
 
 type orderGenerator struct {
 	ordr Order
 }
 
-func an() *orderGenerator { return &orderGenerator{} }
+func a(registrar testy.Registrar) *generators {
+	return &generators{
+		registrar: registrar,
+	}
+}
+func an(registrar testy.Registrar) *generators { return a(registrar) }
 
-func (o *orderGenerator) order() *orderGenerator {
-	o.ordr = Order{}
-	return o
+func (o *generators) order() *orderGenerator {
+	return &orderGenerator{}
 }
 
 func (o *orderGenerator) createdAt(t time.Time) *orderGenerator {
@@ -24,4 +37,5 @@ func (o *orderGenerator) as(s Status) *orderGenerator {
 }
 
 func (o *orderGenerator) was() *orderGenerator { return o }
-func (o *orderGenerator) toOrder() *Order      { return &o.ordr }
+
+func (o *orderGenerator) generate() *Order { return &o.ordr }
