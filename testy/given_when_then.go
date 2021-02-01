@@ -17,7 +17,10 @@ func Given(t *testing.T, fn Do) GivenResult {
 
 func (g GivenResult) When(fn Do) WhenResult {
 	copy := g.ctx.copy()
+	copy.beforeEach()
 	fn(copy)
+	copy.afterEach()
+
 	return WhenResult{
 		ctx: copy,
 	}
@@ -25,8 +28,9 @@ func (g GivenResult) When(fn Do) WhenResult {
 
 func (g GivenResult) WhenR(fn DoR) WhenResult {
 	copy := g.ctx.copy()
-	got := fn(copy)
-	copy.got = got
+	copy.beforeEach()
+	copy.got = fn(copy)
+	copy.afterEach()
 
 	return WhenResult{
 		ctx: copy,
@@ -37,34 +41,39 @@ func (w WhenResult) Then(fn func(Resolver)) {
 	fn(w.ctx)
 }
 
-func When(context Tctx, fn func()) WhenResult {
+func When(ctx Tctx, fn func()) WhenResult {
+	copy := ctx.(*TestContext).copy()
+	copy.beforeEach()
 	fn()
-	copy := context.(*TestContext).copy()
 	copy.got = copy.Subject()
-	return WhenResult{
-		copy,
-	}
-}
-
-func WhenR(context Tctx, fn func() interface{}) WhenResult {
-	got := fn()
-	ctx := context.(*TestContext)
-	copy := ctx.copy()
-	copy.got = got
+	copy.afterEach()
 
 	return WhenResult{
 		copy,
 	}
 }
 
-func WhenRErr(context Tctx, fn func() (interface{}, error)) WhenResult {
+func WhenR(ctx Tctx, fn func() interface{}) WhenResult {
+	copy := ctx.(*TestContext).copy()
+	copy.beforeEach()
+	copy.got = fn()
+	copy.afterEach()
+
+	return WhenResult{
+		copy,
+	}
+}
+
+func WhenRErr(ctx Tctx, fn func() (interface{}, error)) WhenResult {
+	copy := ctx.(*TestContext).copy()
+	copy.beforeEach()
 	got, err := fn()
-	ctx := context.(*TestContext)
-	ctx.got = got
-	ctx.err = err
+	copy.got = got
+	copy.err = err
+	copy.afterEach()
 
 	return WhenResult{
-		ctx.copy(),
+		copy,
 	}
 }
 

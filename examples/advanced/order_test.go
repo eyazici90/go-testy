@@ -24,7 +24,7 @@ func TestOrder_should_be_shipped_when_ship(t *testing.T) {
 }
 
 func TestOrder_Specs(t *testing.T) {
-	GivenSubject(t, func(ctx Tctx) {
+	GivenOrder(t, func(ctx Tctx) {
 
 		WhenR(ctx, func() interface{} {
 			return ctx.Subject().(*Order).Pay()
@@ -38,6 +38,30 @@ func TestOrder_Specs(t *testing.T) {
 		}).
 			Then(func(r Resolver) {
 				assert.Equal(r.T(), Shipped, r.Got().(*Order).status)
+			})
+
+	})
+}
+
+func TestOrder_Specs_v2(t *testing.T) {
+	Given(t, func(ctx Tctx) {
+		var order *Order
+		ctx.BeforeEach(func() {
+			order = an(ctx).order().was().createdAt(time.Now()).as(Submitted).generate()
+		})
+
+		WhenR(ctx, func() interface{} {
+			return order.Pay()
+		}).
+			Then(func(r Resolver) {
+				assert.Equal(r.T(), Paid, r.Got())
+			})
+
+		When(ctx, func() {
+			order.Ship()
+		}).
+			Then(func(r Resolver) {
+				assert.Equal(r.T(), Shipped, order.status)
 			})
 
 	})
@@ -58,7 +82,7 @@ func TestOrder_should_be_not_valid(t *testing.T) {
 	})
 }
 
-func GivenSubject(t *testing.T, fn func(ctx Tctx)) {
+func GivenOrder(t *testing.T, fn func(ctx Tctx)) {
 	Given(t, func(ctx Tctx) {
 		order := an(ctx).order().was().createdAt(time.Now()).as(Submitted).generate()
 
