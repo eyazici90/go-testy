@@ -76,7 +76,3 @@ func WhenRErr(ctx Tctx, fn func() (interface{}, error)) WhenResult {
 		copy,
 	}
 }
-
-func Then(ctx *TestContext, fn func()) {
-	fn()
-}
