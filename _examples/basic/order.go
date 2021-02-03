@@ -1,4 +1,4 @@
-package advanced
+package basic
 
 import (
 	"errors"

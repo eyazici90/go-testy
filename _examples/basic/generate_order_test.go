@@ -1,13 +1,10 @@
-package advanced
+package basic
 
 import (
 	"time"
-
-	"testy/testy"
 )
 
 type generators struct {
-	registrar      testy.Registrar
 	orderGenerator *orderGenerator
 }
 
@@ -15,12 +12,10 @@ type orderGenerator struct {
 	ordr Order
 }
 
-func a(registrar testy.Registrar) *generators {
-	return &generators{
-		registrar: registrar,
-	}
+func a() *generators {
+	return &generators{}
 }
-func an(registrar testy.Registrar) *generators { return a(registrar) }
+func an() *generators { return a() }
 
 func (o *generators) order() *orderGenerator {
 	return &orderGenerator{}

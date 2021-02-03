@@ -1,4 +1,4 @@
-package advanced
+package basic
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 
 func TestOrder_should_be_shipped_when_ship(t *testing.T) {
 	Given(t, func(ctx Tctx) {
-		order := an(ctx).order().was().createdAt(time.Now()).as(Submitted).generate()
+		order := an().order().was().createdAt(time.Now()).as(Submitted).generate()
 
 		When(ctx, func() {
 			order.Ship()
@@ -47,7 +47,7 @@ func TestOrder_Specs_v2(t *testing.T) {
 	Given(t, func(ctx Tctx) {
 		var order *Order
 		ctx.BeforeEach(func() {
-			order = an(ctx).order().was().createdAt(time.Now()).as(Submitted).generate()
+			order = an().order().was().createdAt(time.Now()).as(Submitted).generate()
 		})
 
 		WhenR(ctx, func() interface{} {
@@ -69,7 +69,7 @@ func TestOrder_Specs_v2(t *testing.T) {
 
 func TestOrder_should_be_not_valid(t *testing.T) {
 	Given(t, func(ctx Tctx) {
-		order := an(ctx).order().was().createdAt(time.Now()).as(Submitted).generate()
+		order := an().order().was().createdAt(time.Now()).as(Submitted).generate()
 
 		WhenRErr(ctx, func() (interface{}, error) {
 			return order.Valid()
@@ -84,7 +84,7 @@ func TestOrder_should_be_not_valid(t *testing.T) {
 
 func GivenOrder(t *testing.T, fn func(ctx Tctx)) {
 	Given(t, func(ctx Tctx) {
-		order := an(ctx).order().was().createdAt(time.Now()).as(Submitted).generate()
+		order := an().order().was().createdAt(time.Now()).as(Submitted).generate()
 
 		ctx.SetThe(order)
 		fn(ctx)
