@@ -23,6 +23,21 @@ func TestOrder_should_be_shipped_when_ship(t *testing.T) {
 	})
 }
 
+func TestOrder_should_be_shipped_when_ship_v2(t *testing.T) {
+	Given(t, func(ctx Tctx) {
+		ctx.SetThe(
+			an().order().was().createdAt(time.Now()).as(Submitted).generate(),
+		)
+		When(ctx, func() {
+			ctx.Subject().(*Order).Ship()
+		}).
+			Then(func(r Resolver) {
+				assert.Equal(r.T(), Shipped, r.Got().(*Order).status)
+			})
+
+	})
+}
+
 func TestOrder_Specs(t *testing.T) {
 	GivenOrder(t, func(ctx Tctx) {
 
