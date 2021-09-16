@@ -6,24 +6,6 @@ import (
 
 var doNothing func() = func() {}
 
-type (
-	Tctx interface {
-		Registrar
-		Resolver
-	}
-	Registrar interface {
-		SetThe(i interface{})
-		BeforeEach(fn func())
-		AfterEach(fn func())
-	}
-	Resolver interface {
-		Got() interface{}
-		Err() error
-		Subject() interface{}
-		T() *testing.T
-	}
-)
-
 type TestContext struct {
 	t          *testing.T
 	got        interface{}
